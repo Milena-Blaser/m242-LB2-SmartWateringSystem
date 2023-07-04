@@ -22,72 +22,78 @@ lv_obj_t * blink_checkbox;
 
 lv_obj_t * left_button;
 lv_obj_t * right_button;
+// Pin assignments
+const int pumpPin = 32;  // Replace with the actual pin number
 
-// void event_handler_checkbox(struct _lv_obj_t * obj, lv_event_t event) {
+bool pumpState = false;  // Current state of the pump
+
+
+void event_handler_checkbox(struct _lv_obj_t * obj, lv_event_t event) {
   
-//   if(event == LV_EVENT_VALUE_CHANGED ) {
-//     if(
-//       (obj == red_checkbox || obj == blue_checkbox) &&
-//       (lv_checkbox_is_checked(red_checkbox) || lv_checkbox_is_checked(blue_checkbox))
-//       ) {
-//       lv_checkbox_set_checked(blue_checkbox, obj == blue_checkbox ? lv_checkbox_is_checked(blue_checkbox) : false);
-//       lv_checkbox_set_checked(red_checkbox, obj == red_checkbox ? lv_checkbox_is_checked(red_checkbox) : false);
-//     }
-//     if(
-//       (obj == off_checkbox || obj == on_checkbox || obj == blink_checkbox) &&
-//       (lv_checkbox_is_checked(off_checkbox) || lv_checkbox_is_checked(on_checkbox) || lv_checkbox_is_checked(blink_checkbox))
-//       ) {
-//       lv_checkbox_set_checked(off_checkbox, obj == off_checkbox ? lv_checkbox_is_checked(off_checkbox) : false);
-//       lv_checkbox_set_checked(on_checkbox, obj == on_checkbox ? lv_checkbox_is_checked(on_checkbox) : false);
-//       lv_checkbox_set_checked(blink_checkbox, obj == blink_checkbox ? lv_checkbox_is_checked(blink_checkbox) : false);
-//     }
-//     bool is_ready = (
-//         ((
-//         (lv_checkbox_is_checked(red_checkbox) && !lv_checkbox_is_checked(blue_checkbox)) ||
-//         (!lv_checkbox_is_checked(red_checkbox) && lv_checkbox_is_checked(blue_checkbox))
-//       ) &&
-//       (
-//         (!lv_checkbox_is_checked(off_checkbox) && lv_checkbox_is_checked(on_checkbox) && !lv_checkbox_is_checked(blink_checkbox)) ||
-//         (!lv_checkbox_is_checked(off_checkbox) && !lv_checkbox_is_checked(on_checkbox) && lv_checkbox_is_checked(blink_checkbox))
-//       )) || (
-//         (lv_checkbox_is_checked(off_checkbox) && !lv_checkbox_is_checked(on_checkbox) && !lv_checkbox_is_checked(blink_checkbox))
-//       ));
-//     lv_obj_set_click(left_button, is_ready);
-//     lv_obj_set_click(right_button, is_ready);
-//     lv_obj_set_state(left_button, is_ready ? LV_STATE_DEFAULT : LV_STATE_DISABLED);
-//     lv_obj_set_state(right_button, is_ready ? LV_STATE_DEFAULT : LV_STATE_DISABLED);
-//   } 
-// }
+   if(event == LV_EVENT_VALUE_CHANGED ) {
+     if(
+       (obj == red_checkbox || obj == blue_checkbox) &&
+       (lv_checkbox_is_checked(red_checkbox) || lv_checkbox_is_checked(blue_checkbox))
+       ) {
+       lv_checkbox_set_checked(blue_checkbox, obj == blue_checkbox ? lv_checkbox_is_checked(blue_checkbox) : false);
+       lv_checkbox_set_checked(red_checkbox, obj == red_checkbox ? lv_checkbox_is_checked(red_checkbox) : false);
+     }
+     if(
+       (obj == off_checkbox || obj == on_checkbox || obj == blink_checkbox) &&
+       (lv_checkbox_is_checked(off_checkbox) || lv_checkbox_is_checked(on_checkbox) || lv_checkbox_is_checked(blink_checkbox))
+       ) {
+       lv_checkbox_set_checked(off_checkbox, obj == off_checkbox ? lv_checkbox_is_checked(off_checkbox) : false);
+       lv_checkbox_set_checked(on_checkbox, obj == on_checkbox ? lv_checkbox_is_checked(on_checkbox) : false);
+       lv_checkbox_set_checked(blink_checkbox, obj == blink_checkbox ? lv_checkbox_is_checked(blink_checkbox) : false);
+     }
+     bool is_ready = (
+         ((
+         (lv_checkbox_is_checked(red_checkbox) && !lv_checkbox_is_checked(blue_checkbox)) ||
+         (!lv_checkbox_is_checked(red_checkbox) && lv_checkbox_is_checked(blue_checkbox))
+       ) &&
+       (
+         (!lv_checkbox_is_checked(off_checkbox) && lv_checkbox_is_checked(on_checkbox) && !lv_checkbox_is_checked(blink_checkbox)) ||
+         (!lv_checkbox_is_checked(off_checkbox) && !lv_checkbox_is_checked(on_checkbox) && lv_checkbox_is_checked(blink_checkbox))
+       )) || (
+         (lv_checkbox_is_checked(off_checkbox) && !lv_checkbox_is_checked(on_checkbox) && !lv_checkbox_is_checked(blink_checkbox))
+       ));
+     lv_obj_set_click(left_button, is_ready);
+     lv_obj_set_click(right_button, is_ready);
+     lv_obj_set_state(left_button, is_ready ? LV_STATE_DEFAULT : LV_STATE_DISABLED);
+     lv_obj_set_state(right_button, is_ready ? LV_STATE_DEFAULT : LV_STATE_DISABLED);
+   } 
+ }
 
 void event_handler_button(struct _lv_obj_t * obj, lv_event_t event) {
-  // if(event == LV_EVENT_PRESSED) {
-  //   uint8_t led_start = (obj == right_button ? 0 : 5);
-  //   uint8_t led_end = (obj == right_button ? 5 : 10);
-  //   CRGB color = lv_checkbox_is_checked(blue_checkbox) ? CRGB::Blue : CRGB::Red;
-  //   uint8_t state = SIDELED_STATE_OFF;
-  //   if(lv_checkbox_is_checked(on_checkbox)) state = SIDELED_STATE_ON;
-  //   if(lv_checkbox_is_checked(blink_checkbox)) state = SIDELED_STATE_BLINK;
-  //   set_sideled_color(led_start,led_end, color);
-  //   set_sideled_state(led_start,led_end, state);
-  // }
+   if(event == LV_EVENT_PRESSED) {
+     uint8_t led_start = (obj == right_button ? 0 : 5);
+     uint8_t led_end = (obj == right_button ? 5 : 10);
+     CRGB color = lv_checkbox_is_checked(blue_checkbox) ? CRGB::Blue : CRGB::Red;
+     uint8_t state = SIDELED_STATE_OFF;
+     if(lv_checkbox_is_checked(on_checkbox)) state = SIDELED_STATE_ON;
+     if(lv_checkbox_is_checked(blink_checkbox)) state = SIDELED_STATE_BLINK;
+     set_sideled_color(led_start,led_end, color);
+     digitalWrite(pumpPin, LOW);
+     set_sideled_state(led_start,led_end, state);
+   }
 }
 
 void init_gui_elements() {
-  // add_label("1. Select Color", 10, 10);
-  // red_checkbox = add_checkbox("Red", 10, 40, event_handler_checkbox);
-  // blue_checkbox = add_checkbox("Blue", 120, 40, event_handler_checkbox);
-  // add_label("2. Select Mode", 10, 70);
-  // off_checkbox = add_checkbox("Off", 10, 100, event_handler_checkbox);
-  // on_checkbox = add_checkbox("On", 120, 100, event_handler_checkbox);
-  // blink_checkbox = add_checkbox("Blink", 200, 100, event_handler_checkbox);
-  // add_label("3. Apply Color to side:", 10, 140);
-  // left_button = add_button("Apply Left", event_handler_button, 0, 170, 150, 50);
-  // right_button = add_button("Apply Right", event_handler_button, 160, 170, 150, 50);
+   add_label("1. Select Color", 10, 10);
+   red_checkbox = add_checkbox("Red", 10, 40, event_handler_checkbox);
+   blue_checkbox = add_checkbox("Blue", 120, 40, event_handler_checkbox);
+   add_label("2. Select Mode", 10, 70);
+   off_checkbox = add_checkbox("Off", 10, 100, event_handler_checkbox);
+   on_checkbox = add_checkbox("On", 120, 100, event_handler_checkbox);
+   blink_checkbox = add_checkbox("Blink", 200, 100, event_handler_checkbox);
+   add_label("3. Apply Color to side:", 10, 140);
+   left_button = add_button("Apply Left", event_handler_button, 0, 170, 150, 50);
+   right_button = add_button("Apply Right", event_handler_button, 160, 170, 150, 50);
 
-  // lv_obj_set_click(left_button, false);
-  // lv_obj_set_click(right_button, false);
-  // lv_obj_set_state(left_button, LV_STATE_DISABLED);
-  // lv_obj_set_state(right_button, LV_STATE_DISABLED);
+   lv_obj_set_click(left_button, false);
+   lv_obj_set_click(right_button, false);
+   lv_obj_set_state(left_button, LV_STATE_DISABLED);
+   lv_obj_set_state(right_button, LV_STATE_DISABLED);
    digitalWrite(32, 1);
 
 }
@@ -138,6 +144,29 @@ void loop() {
     lv_task_handler();
     next_lv_task = millis() + 5;
   }
+   // Check if the GUI button is pressed
+  if (M5.BtnA.wasPressed()) {
+    // Toggle the pump state
+    pumpState = !pumpState;
+
+    // Update the pump status and display on the screen
+    if (pumpState) {
+      digitalWrite(pumpPin, HIGH);
+      M5.Lcd.fillScreen(BLACK);
+      M5.Lcd.setTextColor(WHITE, BLACK);
+      M5.Lcd.setTextDatum(MC_DATUM);
+      M5.Lcd.drawString("Pump: ON", M5.Lcd.width() / 2, M5.Lcd.height() / 2);
+    } else {
+      digitalWrite(pumpPin, LOW);
+      M5.Lcd.fillScreen(BLACK);
+      M5.Lcd.setTextColor(WHITE, BLACK);
+      M5.Lcd.setTextDatum(MC_DATUM);
+      M5.Lcd.drawString("Pump: OFF", M5.Lcd.width() / 2, M5.Lcd.height() / 2);
+    }
+  }
+
+  // Other loop code
+  // ...
 
   // Uncomment the following lines to enable MQTT
   // mqtt_loop();
@@ -151,6 +180,23 @@ void setup() {
   init_m5();
   init_display();
   Serial.begin(115200);
+    M5.begin();
+  M5.Lcd.fillScreen(BLACK);
+
+  // Initialize GPIO pin
+  pinMode(pumpPin, OUTPUT);
+
+  // Set pumpPin to LOW (initially off)
+  digitalWrite(pumpPin, LOW);
+
+  // Create the GUI button
+  M5.Lcd.setTextSize(2);
+  M5.Lcd.setTextColor(WHITE, BLACK);
+  M5.Lcd.setTextDatum(MC_DATUM);
+  M5.Lcd.drawString("Pump: OFF", M5.Lcd.width() / 2, M5.Lcd.height() / 2);
+
+  // Other setup code
+  // ...
   // Uncomment the following lines to enable WiFi and MQTT
   //lv_obj_t * wifiConnectingBox = show_message_box_no_buttons("Connecting to WiFi...");
   //lv_task_handler();
