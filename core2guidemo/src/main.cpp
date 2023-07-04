@@ -1,42 +1,60 @@
 #include <Arduino.h>
+#include <M5Core2.h>
 #include "view.h"
-#include "networking.h"
-#include "sideled.h"
-
-
 
 #define INPUT_PIN 36
 #define PUMP_PIN  26
+lv_obj_t * left_button;
 
 bool flag = true;
 int rawADC;
 
-void setup() {
-    M5.begin();
-    M5.Lcd.setTextColor(GREEN);
-    M5.Lcd.setTextSize(3);
-    M5.Lcd.setTextDatum(TC_DATUM);
-    M5.Lcd.drawString("Watering TEST", 160, 20, 1);
-    M5.Lcd.drawString("ON/OFF PUMP", 160, 200, 1);
-    pinMode(INPUT_PIN, INPUT);
-    pinMode(PUMP_PIN, OUTPUT);
-    pinMode(25, OUTPUT);
-    digitalWrite(25, 0);
+void event_handler_button(struct _lv_obj_t * obj, lv_event_t event) {
+  if(event == LV_EVENT_PRESSED) {
+    Serial.println("Button pressed");
+    digitalWrite(PUMP_PIN, flag);
+    flag = !flag;
+  }
 }
 
-char info[30];
+void init_gui_elements() {
+  add_label("HUMIDITY", 10, 10);
+  add_label("Water in ml", 10, 140);
+  add_slider(10, 170);
+  left_button = add_button("PUMP", event_handler_button, 0, 170, 150, 50);
+}
+
+unsigned long next_lv_task = 0;
 
 void loop() {
-    rawADC = analogRead(INPUT_PIN);
-    M5.lcd.fillRect(80, 100, 240, 50, BLACK);
-    M5.Lcd.setCursor(80, 100);
-    M5.Lcd.print("ADC: " + String(rawADC));
-    Serial.print("Watering ADC value: ");
-    Serial.println(rawADC);
-    if (M5.BtnB.wasPressed()) {
-        digitalWrite(PUMP_PIN, flag);
-        flag = !flag;
-    }
-    M5.update();
-    delay(100);
+    // rawADC = analogRead(INPUT_PIN);
+    // M5.lcd.fillRect(80, 100, 240, 50, BLACK);
+    // M5.Lcd.setCursor(80, 100);
+    // M5.Lcd.print("ADC: " + String(rawADC));
+    // Serial.print("Watering ADC value: ");
+    // Serial.println(rawADC);
+    // if (M5.BtnB.wasPressed()) {
+    //     digitalWrite(PUMP_PIN, flag);
+    //     flag = !flag;
+    // }
+    // M5.update();
+    // delay(100);
+      if(next_lv_task < millis()) {
+    lv_task_handler();
+    next_lv_task = millis() + 5;
+  }
+
 }
+
+void setup() {
+    init_m5();
+    init_display();
+    Serial.begin(115200);
+    M5.begin();
+    init_gui_elements();
+    // pinMode(INPUT_PIN, INPUT);
+    // pinMode(PUMP_PIN, OUTPUT);
+    // pinMode(25, OUTPUT);
+    // digitalWrite(25, 0);
+}
+

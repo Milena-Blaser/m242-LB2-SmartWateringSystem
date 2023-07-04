@@ -23,4 +23,6 @@ lv_obj_t * add_led(lv_coord_t x_ofs, lv_coord_t y_ofs, lv_coord_t w, lv_coord_t 
 
 lv_obj_t * add_checkbox(const char * text, lv_coord_t x_ofs, lv_coord_t y_ofs, lv_event_cb_t event_handler = NULL);
 
+lv_obj_t * add_slider(lv_coord_t x_ofs, lv_coord_t y_ofs);
+
 #endif // BASE_H
