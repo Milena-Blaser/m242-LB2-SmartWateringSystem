@@ -19,6 +19,7 @@ lv_obj_t * show_message_box(const char * text, const char * ok_button_text, cons
 
 void close_message_box(lv_obj_t * msgbox);
 
+
 lv_obj_t * show_message_box_no_buttons(const char * text);
 
 lv_obj_t * add_led(lv_coord_t x_ofs, lv_coord_t y_ofs, lv_coord_t w, lv_coord_t h);

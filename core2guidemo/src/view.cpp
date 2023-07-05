@@ -90,6 +90,7 @@ lv_obj_t * add_label(const char * text, lv_coord_t x_ofs, lv_coord_t y_ofs) {
   lv_label_set_align(label, LV_LABEL_ALIGN_CENTER);
   lv_label_set_long_mode(label, LV_LABEL_LONG_DOT);
   lv_obj_align(label, NULL, LV_ALIGN_IN_TOP_MID, x_ofs, y_ofs);
+
   return label;
 }
 
@@ -118,7 +119,7 @@ lv_obj_t * add_button(const char * text, lv_event_cb_t event_cb, lv_coord_t x_of
     lv_obj_refresh_style(btn1, LV_STYLE_PROP_ALL);
 
     label = lv_label_create(btn1, NULL);
-    
+
     lv_label_set_text(label, text);
 
     lv_obj_add_style(btn1, LV_BTN_PART_MAIN, &style_halo);
@@ -168,7 +169,7 @@ lv_obj_t * show_message_box(const char * text, const char * ok_button_text, cons
 }
 
 void close_message_box(lv_obj_t * msgbox) {
-  lv_msgbox_start_auto_close(msgbox, 10);
+  lv_msgbox_start_auto_close(msgbox, 800);
 }
 
 
