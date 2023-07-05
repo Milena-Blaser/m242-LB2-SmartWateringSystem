@@ -13,7 +13,7 @@ lv_obj_t * add_label(const char * text, lv_coord_t x_ofs, lv_coord_t y_ofs);
 
 lv_obj_t * add_button(const char * text, lv_event_cb_t event_cb, lv_coord_t x_ofs, lv_coord_t y_ofs);
 
-void add_slider(int min, int max, lv_coord_t x_ofs, lv_coord_t y_ofs);
+lv_obj_t * add_slider(int min, int max, lv_coord_t x_ofs, lv_coord_t y_ofs);
 
 lv_obj_t * show_message_box(const char * text, const char * ok_button_text, const char * no_button_text, lv_event_cb_t event);
 

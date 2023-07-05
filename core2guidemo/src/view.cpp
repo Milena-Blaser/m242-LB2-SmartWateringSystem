@@ -130,7 +130,7 @@ lv_obj_t * add_button(const char * text, lv_event_cb_t event_cb, lv_coord_t x_of
 static void slider_event_cb(lv_obj_t * slider, lv_event_t event);
 static lv_obj_t * slider_label;
 
-void add_slider(int min, int max, lv_coord_t x_ofs, lv_coord_t y_ofs){
+lv_obj_t * add_slider(int min, int max, lv_coord_t x_ofs, lv_coord_t y_ofs){
     /* Create a slider in the center of the display */
     lv_obj_t * slider = lv_slider_create(lv_scr_act(), NULL);
     lv_obj_set_width(slider, LV_DPI * 2);
@@ -144,9 +144,10 @@ void add_slider(int min, int max, lv_coord_t x_ofs, lv_coord_t y_ofs){
     lv_obj_set_auto_realign(slider_label, true);
     lv_label_set_recolor(slider_label, true);
     lv_obj_align(slider_label, slider, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
+    return slider;
 }
 
-static void slider_event_cb(lv_obj_t * slider, lv_event_t event){
+ void slider_event_cb(lv_obj_t * slider, lv_event_t event){
     if(event == LV_EVENT_VALUE_CHANGED) {
         static char buf[4]; /* max 3 bytes for number plus 1 null terminating byte */
         snprintf(buf, 4, "%u", lv_slider_get_value(slider));
