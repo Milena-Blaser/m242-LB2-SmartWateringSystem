@@ -21,14 +21,13 @@ int rawADC;
 void pump_water(int amount){
   last_read = millis();
   amount = amount * 200;
-   Serial.println(amount);
+  Serial.println(!flag);
   while(millis() - last_read < amount){
-  Serial.println(millis() - last_read);
-  digitalWrite(PUMP_PIN, !flag);
+  Serial.println(flag);
+  digitalWrite(PUMP_PIN, true);
   }
 
-  digitalWrite(PUMP_PIN, flag);
-
+digitalWrite(PUMP_PIN, false);
 }
 
 void event_handler_pump(struct _lv_obj_t * obj, lv_event_t event) {
@@ -93,9 +92,8 @@ void setup() {
     Serial.begin(115200);
     M5.begin();
     init_gui_elements();
-    // pinMode(INPUT_PIN, INPUT);
-    // pinMode(PUMP_PIN, OUTPUT);
-    // pinMode(25, OUTPUT);
-     digitalWrite(PUMP_PIN, LOW);
+    digitalWrite(PUMP_PIN, flag);
+    pinMode(INPUT_PIN, INPUT);
+    pinMode(PUMP_PIN, OUTPUT);
 }
 
