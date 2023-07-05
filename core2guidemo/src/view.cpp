@@ -88,32 +88,70 @@ lv_obj_t * add_label(const char * text, lv_coord_t x_ofs, lv_coord_t y_ofs) {
   lv_obj_t * label = lv_label_create(lv_scr_act(), NULL);
   lv_label_set_text(label, text);
   lv_label_set_align(label, LV_LABEL_ALIGN_CENTER);
-  lv_label_set_long_mode(label, LV_LABEL_LONG_EXPAND); 
-
-  lv_obj_align(label, NULL, LV_ALIGN_IN_TOP_LEFT, x_ofs, y_ofs);
-
+  lv_label_set_long_mode(label, LV_LABEL_LONG_DOT);
+  lv_obj_align(label, NULL, LV_ALIGN_IN_TOP_MID, x_ofs, y_ofs);
   return label;
 }
 
 
 // https://docs.lvgl.io/7.11/widgets/btn.html#overview
-lv_obj_t * add_button(const char * text, lv_event_cb_t event_cb, lv_coord_t x_ofs, lv_coord_t y_ofs, lv_coord_t w, lv_coord_t h) {
+lv_obj_t * add_button(const char * text, lv_event_cb_t event_cb, lv_coord_t x_ofs, lv_coord_t y_ofs) {
     lv_obj_t * label;
     lv_obj_t * btn1 = lv_btn_create(lv_scr_act(), NULL);
     lv_obj_set_event_cb(btn1, event_cb);
 
-    lv_obj_align(btn1, NULL, LV_ALIGN_IN_TOP_LEFT, x_ofs, y_ofs);
-    lv_obj_set_width(btn1, w);
-    lv_obj_set_height(btn1, h);
+    static lv_style_t style_halo;
+    lv_style_init(&style_halo);
+    lv_style_set_transition_time(&style_halo, LV_STATE_PRESSED, 400);
+    lv_style_set_transition_time(&style_halo, LV_STATE_DEFAULT, 0);
+    lv_style_set_transition_delay(&style_halo, LV_STATE_DEFAULT, 200);
+    lv_style_set_outline_width(&style_halo, LV_STATE_DEFAULT, 0);
+    lv_style_set_outline_width(&style_halo, LV_STATE_PRESSED, 20);
+    lv_style_set_outline_opa(&style_halo, LV_STATE_DEFAULT, LV_OPA_COVER);
+    lv_style_set_outline_opa(&style_halo, LV_STATE_FOCUSED, LV_OPA_COVER);   /*Just to be sure, the theme might use it*/
+    lv_style_set_outline_opa(&style_halo, LV_STATE_PRESSED, LV_OPA_TRANSP);
+    lv_style_set_transition_prop_1(&style_halo, LV_STATE_DEFAULT, LV_STYLE_OUTLINE_OPA);
+    lv_style_set_transition_prop_2(&style_halo, LV_STATE_DEFAULT, LV_STYLE_OUTLINE_WIDTH);
+
+    lv_obj_align(btn1, NULL, LV_ALIGN_IN_BOTTOM_LEFT, x_ofs, y_ofs);
     lv_obj_add_style(btn1, LV_OBJ_PART_ALL, &button_disabled_style);
     lv_obj_refresh_style(btn1, LV_STYLE_PROP_ALL);
 
     label = lv_label_create(btn1, NULL);
+    
     lv_label_set_text(label, text);
+
+    lv_obj_add_style(btn1, LV_BTN_PART_MAIN, &style_halo);
 
     return btn1;
 }
 
+static void slider_event_cb(lv_obj_t * slider, lv_event_t event);
+static lv_obj_t * slider_label;
+
+void add_slider(int min, int max, lv_coord_t x_ofs, lv_coord_t y_ofs){
+    /* Create a slider in the center of the display */
+    lv_obj_t * slider = lv_slider_create(lv_scr_act(), NULL);
+    lv_obj_set_width(slider, LV_DPI * 2);
+    lv_obj_align(slider, NULL, LV_ALIGN_CENTER, 0, 10);
+    lv_obj_set_event_cb(slider, slider_event_cb);
+    lv_slider_set_range(slider, min, max);
+    
+    /* Create a label below the slider */
+    slider_label = lv_label_create(lv_scr_act(), NULL);
+    lv_label_set_text(slider_label, "0");
+    lv_obj_set_auto_realign(slider_label, true);
+    lv_label_set_recolor(slider_label, true);
+    lv_obj_align(slider_label, slider, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
+}
+
+static void slider_event_cb(lv_obj_t * slider, lv_event_t event){
+    if(event == LV_EVENT_VALUE_CHANGED) {
+        static char buf[4]; /* max 3 bytes for number plus 1 null terminating byte */
+        snprintf(buf, 4, "%u", lv_slider_get_value(slider));
+        lv_label_set_text(slider_label, buf);
+    }
+}
 
 lv_obj_t * show_message_box(const char * text, const char * ok_button_text, const char * no_button_text, lv_event_cb_t event)
 {

@@ -17,11 +17,13 @@ void event_handler_button(struct _lv_obj_t * obj, lv_event_t event) {
   }
 }
 
+
 void init_gui_elements() {
-  add_label("HUMIDITY", 10, 10);
-  add_label("Water in ml", 10, 140);
-  add_slider(10, 170);
-  left_button = add_button("PUMP", event_handler_button, 0, 170, 150, 50);
+  add_label("HUMIDITY", 0, 10);
+  add_label("Temperature", 0, 40);
+  add_label("Water in ml", 0, 100);
+  add_slider(1, 100, 20, 170);
+  left_button = add_button("PUMP", event_handler_button, 0, 80);
 }
 
 unsigned long next_lv_task = 0;

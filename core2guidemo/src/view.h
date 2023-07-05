@@ -11,7 +11,9 @@ void init_display();
 
 lv_obj_t * add_label(const char * text, lv_coord_t x_ofs, lv_coord_t y_ofs);
 
-lv_obj_t * add_button(const char * text, lv_event_cb_t event_cb, lv_coord_t x_ofs, lv_coord_t y_ofs, lv_coord_t w, lv_coord_t h);
+lv_obj_t * add_button(const char * text, lv_event_cb_t event_cb, lv_coord_t x_ofs, lv_coord_t y_ofs);
+
+void add_slider(int min, int max, lv_coord_t x_ofs, lv_coord_t y_ofs);
 
 lv_obj_t * show_message_box(const char * text, const char * ok_button_text, const char * no_button_text, lv_event_cb_t event);
 
@@ -22,7 +24,5 @@ lv_obj_t * show_message_box_no_buttons(const char * text);
 lv_obj_t * add_led(lv_coord_t x_ofs, lv_coord_t y_ofs, lv_coord_t w, lv_coord_t h);
 
 lv_obj_t * add_checkbox(const char * text, lv_coord_t x_ofs, lv_coord_t y_ofs, lv_event_cb_t event_handler = NULL);
-
-lv_obj_t * add_slider(lv_coord_t x_ofs, lv_coord_t y_ofs);
 
 #endif // BASE_H
