@@ -45,7 +45,7 @@ void event_handler_pump(struct _lv_obj_t * obj, lv_event_t event) {
 void init_gui_elements() {
   add_label("HUMIDITY", 0, 10);
   //convert humidity to string
-  humidity_label = add_label(String(humidity).c_str(), 0, 40);
+  humidity_label = add_label("humidity", 0, 40);
   add_label("Water in ml", 0, 100);
   slider = add_slider(1, 350, 20, 170);
   left_button = add_button("PUMP", event_handler_pump, 30, -20);
