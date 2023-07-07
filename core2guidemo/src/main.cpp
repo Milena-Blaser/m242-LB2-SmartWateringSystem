@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <M5Core2.h>
 #include "view.h"
+#include "networking.h"
 
 
 #define INPUT_PIN 33
@@ -16,7 +17,7 @@ unsigned long next_lv_task = 0;
 unsigned long last_read = 0;
 
 bool flag = false;
-int rawADC;
+int humidity;
 
 void pump_water(int amount){
   last_read = millis();
@@ -43,7 +44,8 @@ void event_handler_pump(struct _lv_obj_t * obj, lv_event_t event) {
 
 void init_gui_elements() {
   add_label("HUMIDITY", 0, 10);
-  humidity_label = add_label("Temperature", 0, 40);
+  //convert humidity to string
+  humidity_label = add_label(String(humidity).c_str(), 0, 40);
   add_label("Water in ml", 0, 100);
   slider = add_slider(1, 350, 20, 170);
   left_button = add_button("PUMP", event_handler_pump, 30, -20);
@@ -52,7 +54,20 @@ void init_gui_elements() {
 }
 
 
+// ----------------------------------------------------------------------------
+// MQTT callback
+// ----------------------------------------------------------------------------
 
+void mqtt_callback(char* topic, byte* payload, unsigned int length) {
+  // Parse Payload into String
+  char * buf = (char *)malloc((sizeof(char)*(length+1)));
+  memcpy(buf, payload, length);
+  buf[length] = '\0';
+  String payloadS = String(buf);
+  payloadS.trim();
+
+  //write code when MQTT message is received
+}
 
 void loop() {
     // rawADC = analogRead(INPUT_PIN);
@@ -69,20 +84,21 @@ void loop() {
     // delay(100);
     //read values all 10 seconds
 
+    //send values all 60 seconds
   if(last_read < millis()) {
-    last_read = millis() + 100000;
-    rawADC = analogRead(INPUT_PIN);
-    lv_label_set_text(humidity_label, String(rawADC).c_str());
-  } 
-
-    if(next_lv_task < millis()) {
+    last_read = millis() + 60000;
+    Serial.println("Sending data to MQTT broker");
+    humidity = analogRead(INPUT_PIN);
+    Serial.println(humidity);
+    lv_label_set_text(humidity_label, String(humidity).c_str());
+    mqtt_publish("SmartWateringSystem/Janna/Humidity", String(humidity).c_str());
+  }
+    
+  if(next_lv_task < millis()) {
     lv_task_handler();
     next_lv_task = millis() + -10;
   }
-
-  //start pumping 3 ml
-
-  //stop pumping
+  mqtt_loop();
 
 }
 
@@ -90,7 +106,14 @@ void setup() {
     init_m5();
     init_display();
     Serial.begin(115200);
-    M5.begin();
+    
+    lv_obj_t * wifiConnectingBox = show_message_box_no_buttons("Connecting to WiFi...");
+    lv_task_handler();
+    delay(5);
+    setup_wifi();
+    mqtt_init(mqtt_callback);
+    close_message_box(wifiConnectingBox);
+
     init_gui_elements();
     digitalWrite(PUMP_PIN, flag);
     pinMode(INPUT_PIN, INPUT);
