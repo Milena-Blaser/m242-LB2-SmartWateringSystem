@@ -1,6 +1,6 @@
 # M5Stack Core2 - Smart Watering System
 
-![Picture of Core2 showing GUI](docs/gui.jpg)
+![Picture of Core2 showing GUI](core2guidemo/docs/gui.jpg)
 
 The Smart Watering System, implemented using the M5Stack Core2 development board, LVGL graphics library, and FastLED, is a project designed to monitor plant moisture levels. It provides real-time measurements and alerts the user when the plant needs watering. The system offers a user-friendly interface that allows the user to control the watering process through the user interface. This project demonstrates the combined capabilities of the M5Stack Core2, LVGL, and FastLED to provide an efficient and interactive solution for automated plant care.
 
