@@ -37,7 +37,7 @@ void mqtt_re_connect() {
     Serial.println("Attempting MQTT connection...");
     if (client.connect(clientId)) {
         // Define subscriptions here
-      client.subscribe("SmartWateringSystem/#");
+      client.subscribe("smartWateringSystem/#");
     } else {
       Serial.println("failed, rc=");
       Serial.println(client.state());

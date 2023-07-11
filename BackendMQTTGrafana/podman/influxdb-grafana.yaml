@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: influxdb-test
+  labels:
+    app: influxdb-test
+spec:
+  selector:
+    matchLabels:
+      app: influxdb-test
+  template:
+    metadata:
+      labels:
+        app: influxdb-test
+    spec:
+      containers:
+      - image: docker.io/influxdb:latest
+        name: influx
+        env:
+        - name: INFLUXDB_DB
+          value: influx
+        - name: INFLUXDB_ADMIN_USER
+          value: admin
+        - name: INFLUXDB_ADMIN_PASSWORD
+          value: admin
+        ports:
+        - containerPort: 8086
+          hostPort: 8086
+          name: influx
+      - image: docker.io/grafana/grafana
+        name: grafana
+        env:
+        - name: GF_SECURITY_ADMIN_USER
+          value: admin
+        - name: GF_SECURITY_ADMIN_PASSWORD
+          value: admin
+        - name: GF_INSTALL_PLUGINS
+          value: 
+        ports:
+        - containerPort: 3000
+          hostPort: 3000
+          name: grafana
